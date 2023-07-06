@@ -16,6 +16,6 @@ runs:
     with:
       config_url: 'https://raw.githubusercontent.com/porscheofficial/.github/main/workflows/repolinter/general-ruleset.yml'
   - uses: todogroup/repolinter-action@v1
-    if: ${{ inputs.container-registry }}
+    if: ${{ inputs.is-distributed }}
     with:
       config_url: 'https://raw.githubusercontent.com/porscheofficial/.github/main/workflows/repolinter/distribtion-ruleset.yml'

@@ -1,0 +1,13 @@
+version: 2
+axioms:
+  linguist: language
+  packagers: packager
+rules:
+  notice-file-exists:
+    level: error
+    rule:
+      type: file-existence
+      options:
+        globsAny:
+        - NOTICE*
+        nocase: true

@@ -1,0 +1,21 @@
+# For documentation about TODOGroup Repolinter Action see https://github.com/todogroup/repolinter-action
+
+name: 'Repolinter'
+description: >
+  A composite Github Action for the TODOGroup Repolinter (https://github.com/todogroup/repolinter).
+
+inputs:
+  is-distributed:
+    description: Whether or not third-party FOSS components are distributed
+    required: true
+
+runs:
+  using: composite
+  steps:
+  - uses: todogroup/repolinter-action@v1
+    with:
+      config_url: 'https://raw.githubusercontent.com/porscheofficial/.github/main/workflows/repolinter/general-ruleset.yml'
+  - uses: todogroup/repolinter-action@v1
+    if: ${{ inputs.container-registry }}
+    with:
+      config_url: 'https://raw.githubusercontent.com/porscheofficial/.github/main/workflows/repolinter/distribtion-ruleset.yml'

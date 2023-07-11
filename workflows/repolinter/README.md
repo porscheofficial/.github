@@ -1,10 +1,11 @@
 # OSO Repolinter
 
-This reusable GitHub Action workflow uses the [TODO Group repolinter](https://github.com/todogroup/repolinter) to check a repository against the standards we at Porsche endorse for new FOSS projects.
+This reusable GitHub Action workflow uses the [TODO Group repolinter](https://github.com/todogroup/repolinter) to check a repository against the standards
+we at Porsche endorse for new FOSS projects.
 
 ## How to use
 
-To implement this worklow in your repository, create a file named `oso-repolinter.yml` under `.github/workflows` within your project's repository and add the following content:
+To implement this worklow in your repository, create a file named `oso-repolinter.yml` under `.github/workflows` and add the following content:
 
 ```yaml
 name: OSO Repolinter
@@ -27,7 +28,8 @@ jobs:
           is-distributed: false
 ```
 
-Please set `is-distributed` to `true` should you distribute third-party components, i.e. if you have received a compouslory Open-Source Software Notice from the Open Source Office.
+Please set `is-distributed` to `true` should you distribute third-party components, i.e. if you have received a compouslory Open-Source Software Notice
+from the Porsche Open Source Office.
 
 ## Rulesets
 

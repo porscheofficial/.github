@@ -1,7 +1,7 @@
 # OSS Review Toolkit
 
 This reusable GitHub Action workflow uses the [OSS Review Toolkit]([https://github.com/todogroup/repolinter](https://github.com/oss-review-toolkit/ort))
-to createall necessary metadata information needed to ensure FOSS compliance of our FOSS projects.
+to create all necessary metadata information needed to ensure FOSS compliance of our FOSS projects.
 
 ## How to use
 
@@ -32,5 +32,5 @@ jobs:
           container-registry: ${{ secrets.ANALYZER_DOCKER_REGISTRY }}
 ```
 
-The secrets `ANALYZER_AWS_ACCESS_KEY_ID`, `ANALYZER_AWS_ACCESS_KEY`, `ANALYZER_DOCKER_IMAGE`, `ANALYZER_DOCKER_REGISTRY` are defined organization-wide for public repositories.
-Should you work on a private repository within @porscheofficial, please add the secrets manually as defined in our coporate wiki.
+The secrets `ANALYZER_AWS_ACCESS_KEY_ID`, `ANALYZER_AWS_ACCESS_KEY`, `ANALYZER_DOCKER_IMAGE`, `ANALYZER_DOCKER_REGISTRY` are defined organization-wide
+for public repositories. Should you work on a private repository within @porscheofficial, please add the secrets manually as defined in our coporate wiki.

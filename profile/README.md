@@ -1,6 +1,6 @@
 <div align="center">
   <a target="_blank" rel="noopener noreferrer" href="https://opensource.porsche.com">
-    <img src="./FOSS-Taycan.jpg"/>
+    <img src="https://github.com/porscheofficial/.github/blob/main/profile/FOSS-Taycan.jpg?raw=true"/>
   </a>
   
   # Porsche Open Source Platform

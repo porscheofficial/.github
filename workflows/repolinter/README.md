@@ -28,7 +28,7 @@ jobs:
           is-distributed: false
 ```
 
-Please set `is-distributed` to `true` should you distribute third-party components, i.e. if you have received a compouslory Open-Source Software Notice
+Please set `is-distributed` to `true` should you distribute third-party components, i.e. if you have received a compulsory Open-Source Software Notice
 from the Porsche Open Source Office.
 
 ## Rulesets

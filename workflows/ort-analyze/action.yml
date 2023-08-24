@@ -62,8 +62,7 @@ runs:
           ${{ inputs.container-registry }}/${{ inputs.container-repository }}:${{ inputs.container-image-tag }} \
           analyze \
           --input-dir /project/ \
-          --output-dir /project/ort/ \
-          --package-curations-file /curations/ort-package-configurations/curations.yml || ERROR_CODE=`echo $?`
+          --output-dir /project/ort/ || ERROR_CODE=`echo $?`
         if [ $ERROR_CODE -eq 1 ]
         then
           echo "ORT crashed"

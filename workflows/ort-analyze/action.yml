@@ -50,12 +50,15 @@ runs:
         docker pull ${{ inputs.container-registry }}/${{ inputs.container-repository }}:${{ inputs.container-image-tag }}
         docker run ${{ inputs.container-registry }}/${{ inputs.container-repository }}:${{ inputs.container-image-tag }} --version
 
+    - name: Set ownership of project directory
+      shell: bash
+      run: chown -R 1000:1000 ${{ inputs.project-dir }}
+
     # https://github.com/oss-review-toolkit/ort#analyzer
     - name: ORT Analyzer
       shell: bash
       run: |
         docker run \
-          -u $(id -u):$(id -g) \
           -v ${{ inputs.project-dir }}:/project \
           ${{ inputs.container-registry }}/${{ inputs.container-repository }}:${{ inputs.container-image-tag }} \
           --debug analyze \

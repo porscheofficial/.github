@@ -41,6 +41,8 @@ runs:
 
     # Login to ORT Amazon ECR
     - uses: aws-actions/amazon-ecr-login@v1
+      with:
+        mask-password: true
 
     - name: Pull OSO ORT Image
       shell: bash
@@ -60,7 +62,7 @@ runs:
         docker run \
           --volume ${{ inputs.project-dir }}:/project \
           ${{ inputs.container-registry }}/${{ inputs.container-repository }}:${{ inputs.container-image-tag }} \
-          analyze \
+          --debug analyze \
           --input-dir /project/ \
           --output-dir /project/ort/ || ERROR_CODE=`echo $?`
         if [ $ERROR_CODE -eq 1 ]

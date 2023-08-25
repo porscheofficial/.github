@@ -52,7 +52,7 @@ runs:
 
     - name: Set ownership of project directory
       shell: bash
-      run: chown -R 1000:1000 ${{ inputs.project-dir }}
+      run: sudo chown -R 1000:1000 ${{ inputs.project-dir }}
 
     # https://github.com/oss-review-toolkit/ort#analyzer
     - name: ORT Analyzer

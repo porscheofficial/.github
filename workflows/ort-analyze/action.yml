@@ -47,30 +47,20 @@ runs:
     - name: Pull OSO ORT Image
       shell: bash
       run: |
-        # Pull OSS Review Toolkit container
-        echo "::group::Pull OSS Review Toolkit container"
         docker pull ${{ inputs.container-registry }}/${{ inputs.container-repository }}:${{ inputs.container-image-tag }}
         docker run ${{ inputs.container-registry }}/${{ inputs.container-repository }}:${{ inputs.container-image-tag }} --version
-        echo "::endgroup::"
 
     # https://github.com/oss-review-toolkit/ort#analyzer
     - name: ORT Analyzer
       shell: bash
       run: |
-        # Analyze repository
-        echo "::group::Analyze repository"
         docker run \
-          --volume ${{ inputs.project-dir }}:/project \
+          -u $(id -u):$(id -g) \
+          -v ${{ inputs.project-dir }}:/project \
           ${{ inputs.container-registry }}/${{ inputs.container-repository }}:${{ inputs.container-image-tag }} \
           --debug analyze \
           --input-dir /project/ \
-          --output-dir /project/ort/ || ERROR_CODE=`echo $?`
-        if [ $ERROR_CODE -eq 1 ]
-        then
-          echo "ORT crashed"
-          exit 1
-        fi
-        echo "::endgroup::"
+          --output-dir /project/ort/
 
     # Archive ORT YAML result
     - uses: actions/upload-artifact@v3

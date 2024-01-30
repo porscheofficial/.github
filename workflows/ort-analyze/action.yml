@@ -28,7 +28,13 @@ inputs:
     description: Image tag for ORT docker container
     required: false
     default: latest
-
+  allow-dynamic-versions:
+    description: |
+      Set to 'true' only if dynamic dependency versions are allowed (note version ranges specified for dependencies may cause unstable results).
+      This field applies only to package managers that support lock files, e.g. NPM.
+    required: false
+    default: 'false'
+    
 runs:
   using: composite
   steps:
@@ -62,6 +68,7 @@ runs:
         docker run \
           -v ${{ inputs.project-dir }}:/project \
           ${{ inputs.container-registry }}/${{ inputs.container-repository }}:${{ inputs.container-image-tag }} \
+          -P ort.analyzer.allowDynamicVersions=${{ inputs.allow-dynamic-versions }} \
           --debug analyze \
           --input-dir /project/ \
           --output-dir /project/ort/

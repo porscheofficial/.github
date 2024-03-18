@@ -55,6 +55,16 @@ runs:
       run: |
         docker pull ${{ inputs.container-registry }}/${{ inputs.container-repository }}:${{ inputs.container-image-tag }}
         docker run ${{ inputs.container-registry }}/${{ inputs.container-repository }}:${{ inputs.container-image-tag }} --version
+        
+    - name: Initialize ORT workspace
+      shell: bash
+      run: |
+        mkdir -p $HOME/.cache/scancode-tk/; chmod -R aug+w ${HOME}/.cache/ || :
+        mkdir -p $HOME/.config/jgit/; chmod -R aug+w ${HOME}/.config/ || :
+        mkdir -p $HOME/$ORT_HOME_PATH/{cache,config,ort-results,scanner/archive/,scanner/provenance/}; chmod -R aug+w ${HOME}/$ORT_HOME_PATH/ || :
+        mkdir -p $HOME/.gradle/; chmod -R aug+w ${HOME}/.gradle/ || :
+        mkdir -p $HOME/.rustup/{cache,download,tmp}; chmod -R aug+w ${HOME}/.rustup/ || :
+        mkdir -p $HOME/go/; chmod -R aug+w ${HOME}/go/ || :
 
     # https://github.com/oss-review-toolkit/ort#analyzer
     - name: ORT Analyzer

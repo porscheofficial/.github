@@ -56,10 +56,6 @@ runs:
         docker pull ${{ inputs.container-registry }}/${{ inputs.container-repository }}:${{ inputs.container-image-tag }}
         docker run ${{ inputs.container-registry }}/${{ inputs.container-repository }}:${{ inputs.container-image-tag }} --version
 
-    - name: Set ownership of project directory
-      shell: bash
-      run: sudo chown -R 1000:1000 ${{ inputs.project-dir }}
-
     # https://github.com/oss-review-toolkit/ort#analyzer
     - name: ORT Analyzer
       continue-on-error: true
@@ -67,6 +63,7 @@ runs:
       run: |
         docker run \
           -v ${{ inputs.project-dir }}:/project \
+          -u $(id -u):$(id -g) \
           ${{ inputs.container-registry }}/${{ inputs.container-repository }}:${{ inputs.container-image-tag }} \
           -P ort.analyzer.allowDynamicVersions=${{ inputs.allow-dynamic-versions }} \
           --debug analyze \
@@ -76,5 +73,5 @@ runs:
     # Archive ORT YAML result
     - uses: actions/upload-artifact@v3
       with:
-        name: OSS Review Toolkit result (YAML)
+        name: ort-analyzer-result
         path: ort/analyzer-result.yml

@@ -54,8 +54,7 @@ runs:
       shell: bash
       run: |
         docker pull ${{ inputs.container-registry }}/${{ inputs.container-repository }}:${{ inputs.container-image-tag }}
-        docker run ${{ inputs.container-registry }}/${{ inputs.container-repository }}:${{ inputs.container-image-tag }} --version
-        
+
     - name: Initialize ORT workspace
       shell: bash
       run: |

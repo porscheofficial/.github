@@ -39,14 +39,14 @@ runs:
   using: composite
   steps:
     # Configure AWS credentials
-    - uses: aws-actions/configure-aws-credentials@v1
+    - uses: aws-actions/configure-aws-credentials@v4
       with:
         aws-access-key-id: ${{ inputs.ort-aws-access-key-id }}
         aws-secret-access-key: ${{ inputs.ort-aws-secret-access-key }}
         aws-region: eu-central-1
 
     # Login to ORT Amazon ECR
-    - uses: aws-actions/amazon-ecr-login@v1
+    - uses: aws-actions/amazon-ecr-login@v2
       with:
         mask-password: true
 
@@ -61,7 +61,7 @@ runs:
       run: |
         mkdir -p $HOME/.cache/scancode-tk/; chmod -R aug+w ${HOME}/.cache/ || :
         mkdir -p $HOME/.config/jgit/; chmod -R aug+w ${HOME}/.config/ || :
-        mkdir -p $HOME/$ORT_HOME_PATH/{cache,config,ort-results,scanner/archive/,scanner/provenance/}; chmod -R aug+w ${HOME}/$ORT_HOME_PATH/ || :
+        mkdir -p $HOME/.ort/{cache,config,ort-results,scanner/archive/,scanner/provenance/}; chmod -R aug+w ${HOME}/.ort/ || :
         mkdir -p $HOME/.gradle/; chmod -R aug+w ${HOME}/.gradle/ || :
         mkdir -p $HOME/.rustup/{cache,download,tmp}; chmod -R aug+w ${HOME}/.rustup/ || :
         mkdir -p $HOME/go/; chmod -R aug+w ${HOME}/go/ || :
@@ -77,12 +77,12 @@ runs:
           -u $(id -u):$(id -g) \
           ${{ inputs.container-registry }}/${{ inputs.container-repository }}:${{ inputs.container-image-tag }} \
           -P ort.analyzer.allowDynamicVersions=${{ inputs.allow-dynamic-versions }} \
-          --debug analyze \
+          analyze \
           --input-dir /project/ \
           --output-dir /project/ort/
 
     # Archive ORT YAML result
-    - uses: actions/upload-artifact@v3
+    - uses: actions/upload-artifact@v4
       with:
         name: ort-analyzer-result
         path: ort/analyzer-result.yml

@@ -72,6 +72,7 @@ runs:
       shell: bash
       run: |
         docker run \
+          --mount type=bind,source=$HOME,target=/home/ort
           -v ${{ inputs.project-dir }}:/project \
           -u $(id -u):$(id -g) \
           ${{ inputs.container-registry }}/${{ inputs.container-repository }}:${{ inputs.container-image-tag }} \

@@ -64,6 +64,10 @@ runs:
         mkdir -p $HOME/.gradle/; chmod -R aug+w ${HOME}/.gradle/ || :
         mkdir -p $HOME/.rustup/{cache,download,tmp}; chmod -R aug+w ${HOME}/.rustup/ || :
         mkdir -p $HOME/go/; chmod -R aug+w ${HOME}/go/ || :
+        container_id=$(docker create ${{ inputs.container-registry }}/${{ inputs.container-repository }}:${{ inputs.container-image-tag }}) || :
+        docker cp $container_id:/home/ort/curations/ $HOME/curations || :
+        docker cp $container_id:/home/ort/.ort/config/config.yml $HOME/.ort/config/config.yml || :
+        docker rm $container_id || :
 
     # https://github.com/oss-review-toolkit/ort#analyzer
     - name: ORT Analyzer

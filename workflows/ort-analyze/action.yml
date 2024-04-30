@@ -80,6 +80,7 @@ runs:
           -u $(id -u):$(id -g) \
           ${{ inputs.container-registry }}/${{ inputs.container-repository }}:${{ inputs.container-image-tag }} \
           -P ort.analyzer.allowDynamicVersions=${{ inputs.allow-dynamic-versions }} \
+          -P ort.allowedProcessEnvironmentVariableNames="NPM_TOKEN_PORSCHEDEV" \
           analyze \
           --input-dir /project/ \
           --output-dir /project/ort/

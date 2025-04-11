@@ -88,4 +88,4 @@ runs:
     - uses: actions/upload-artifact@v4
       with:
         name: ort-analyzer-result
-        path: ort/analyzer-result.yml
+        path: ${{ inputs.project-dir }}/ort/analyzer-result.yml

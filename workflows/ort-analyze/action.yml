@@ -4,20 +4,20 @@ name: 'OSO OSS Review Toolkit'
 description: >
   A Github Action for the OSS Review Toolkit (https://github.com/oss-review-toolkit/ort).
 
-  The following reports are generated:
+  The following reports are generated
   - ort/analyzer-result.yml
 
 inputs:
   ort-aws-access-key-id:
-    description: AWS access key for the AWS ECR where the ORT container is located
+    description: AWS access key id for the AWS ECR where the ORT container is located
     required: true
   ort-aws-secret-access-key:
-    description: AWS secret access key for the AWS ECR where the ORT container is located
+    description: AWS access key for the AWS ECR where the ORT container is located
     required: true
   project-dir:
     description: Directory where the source code is located and the reports are saved in the `ort` subfolder
     required: false
-    default: $GITHUB_WORKSPACE
+    default: $GITHUB_WORKSPACE/
   container-registry:
     description: Registry for ORT docker container
     required: true
@@ -75,21 +75,22 @@ runs:
         docker cp $container_id:/home/ort/.ort/config/config.yml $HOME/.ort/config/config.yml || echo "No config.yml found"
         docker rm $container_id
 
-    - name: Run ORT Analyzer
+    # https://github.com/oss-review-toolkit/ort#analyzer
+    - name: ORT Analyzer
       continue-on-error: true
       shell: bash
       run: |
         echo "Running ORT analyzer..."
         docker run \
           --mount type=bind,source=$HOME,target=/home/ort \
-          -v "${{ inputs.project-dir }}":/project \
+          -v ${{ inputs.project-dir }}:/project \
           -u $(id -u):$(id -g) \
           ${{ inputs.container-registry }}/${{ inputs.container-repository }}:${{ inputs.container-image-tag }} \
           -P ort.analyzer.allowDynamicVersions=${{ inputs.allow-dynamic-versions }} \
           analyze \
           --input-dir /project/ \
           --output-dir /project/ort/
-    
+
     - name: Debug - Print workspace file structure
       shell: bash
       run: |
@@ -97,6 +98,7 @@ runs:
         echo "Listing contents of ${{ inputs.project-dir }}/ort:"
         find "${{ inputs.project-dir }}/ort" -type f -exec ls -l {} \;
 
+    # Archive ORT YAML result
     - name: Upload ORT Analyzer Result
       uses: actions/upload-artifact@v4
       with:

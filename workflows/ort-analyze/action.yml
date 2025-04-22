@@ -1,82 +1,85 @@
 # For documentation about OSS Review Toolkit see https://github.com/oss-review-toolkit/ort
 
-name: 'OSO OSS Review Toolkit'
+name: 'OSS Review Toolkit'
 description: >
-  A Github Action for the OSS Review Toolkit (https://github.com/oss-review-toolkit/ort).
+  A GitHub Action for the OSS Review Toolkit (https://github.com/oss-review-toolkit/ort).
 
-  The following reports are generated
+  The following reports are generated:
   - ort/analyzer-result.yml
 
 inputs:
   ort-aws-access-key-id:
-    description: AWS access key id for the AWS ECR where the ORT container is located
+    description: AWS access key ID for the AWS ECR where the ORT container is located
     required: true
   ort-aws-secret-access-key:
-    description: AWS access key for the AWS ECR where the ORT container is located
+    description: AWS secret access key for the AWS ECR where the ORT container is located
     required: true
   project-dir:
     description: Directory where the source code is located and the reports are saved in the `ort` subfolder
     required: false
-    default: $GITHUB_WORKSPACE/
+    default: '.'
   container-registry:
-    description: Registry for ORT docker container
+    description: Registry for ORT Docker container
     required: true
   container-repository:
-    description: Repository for ORT docker container
+    description: Repository for ORT Docker container
     required: true
   container-image-tag:
-    description: Image tag for ORT docker container
+    description: Image tag for ORT Docker container
     required: false
     default: latest
   allow-dynamic-versions:
-    description: |
-      Set to 'true' only if dynamic dependency versions are allowed (note version ranges specified for dependencies may cause unstable results).
-      This field applies only to package managers that support lock files, e.g. NPM.
+    description: >
+      Set to 'true' only if dynamic dependency versions are allowed.
+      This applies to package managers that support lock files, e.g. NPM.
     required: false
     default: 'false'
-    
+
 runs:
   using: composite
   steps:
-    # Configure AWS credentials
     - uses: aws-actions/configure-aws-credentials@v4
       with:
         aws-access-key-id: ${{ inputs.ort-aws-access-key-id }}
         aws-secret-access-key: ${{ inputs.ort-aws-secret-access-key }}
         aws-region: eu-central-1
 
-    # Login to ORT Amazon ECR
     - uses: aws-actions/amazon-ecr-login@v2
       with:
         mask-password: true
 
-    - name: Pull OSO ORT Image
+    - name: Pull ORT Docker Image
       shell: bash
       run: |
+        echo "Pulling ORT image..."
         docker pull ${{ inputs.container-registry }}/${{ inputs.container-repository }}:${{ inputs.container-image-tag }}
 
     - name: Initialize ORT workspace
       shell: bash
       run: |
-        mkdir -p $HOME/.cache/scancode-tk/; chmod -R aug+w ${HOME}/.cache/ || :
-        mkdir -p $HOME/.config/jgit/; chmod -R aug+w ${HOME}/.config/ || :
-        mkdir -p $HOME/.ort/{cache,config,ort-results,scanner/archive/,scanner/provenance/}; chmod -R aug+w ${HOME}/.ort/ || :
-        mkdir -p $HOME/.gradle/; chmod -R aug+w ${HOME}/.gradle/ || :
-        mkdir -p $HOME/.rustup/{cache,download,tmp}; chmod -R aug+w ${HOME}/.rustup/ || :
-        mkdir -p $HOME/go/; chmod -R aug+w ${HOME}/go/ || :
-        container_id=$(docker create ${{ inputs.container-registry }}/${{ inputs.container-repository }}:${{ inputs.container-image-tag }}) || :
-        docker cp $container_id:/home/ort/curations/ $HOME/curations || :
-        docker cp $container_id:/home/ort/.ort/config/config.yml $HOME/.ort/config/config.yml || :
-        docker rm $container_id || :
+        echo "Initializing ORT workspace..."
+        mkdir -p $HOME/.cache/scancode-tk/
+        mkdir -p $HOME/.config/jgit/
+        mkdir -p $HOME/.ort/{cache,config,ort-results,scanner/archive/,scanner/provenance/}
+        mkdir -p $HOME/.gradle/
+        mkdir -p $HOME/.rustup/{cache,download,tmp}
+        mkdir -p $HOME/go/
 
-    # https://github.com/oss-review-toolkit/ort#analyzer
-    - name: ORT Analyzer
+        chmod -R a+rwX $HOME/.cache $HOME/.config $HOME/.ort $HOME/.gradle $HOME/.rustup $HOME/go || true
+
+        container_id=$(docker create ${{ inputs.container-registry }}/${{ inputs.container-repository }}:${{ inputs.container-image-tag }})
+        docker cp $container_id:/home/ort/curations/ $HOME/curations || echo "No curations to copy"
+        docker cp $container_id:/home/ort/.ort/config/config.yml $HOME/.ort/config/config.yml || echo "No config.yml found"
+        docker rm $container_id
+
+    - name: Run ORT Analyzer
       continue-on-error: true
       shell: bash
       run: |
+        echo "Running ORT analyzer..."
         docker run \
           --mount type=bind,source=$HOME,target=/home/ort \
-          -v ${{ inputs.project-dir }}:/project \
+          -v "${{ github.workspace }}/${{ inputs.project-dir }}":/project \
           -u $(id -u):$(id -g) \
           ${{ inputs.container-registry }}/${{ inputs.container-repository }}:${{ inputs.container-image-tag }} \
           -P ort.analyzer.allowDynamicVersions=${{ inputs.allow-dynamic-versions }} \
@@ -84,8 +87,15 @@ runs:
           --input-dir /project/ \
           --output-dir /project/ort/
 
-    # Archive ORT YAML result
-    - uses: actions/upload-artifact@v4
+    - name: Debug - Print workspace file structure
+      shell: bash
+      run: |
+        echo "Current directory: $(pwd)"
+        echo "Listing contents of ${{ github.workspace }}/${{ inputs.project-dir }}/ort:"
+        find "${{ github.workspace }}/${{ inputs.project-dir }}/ort" -type f -exec ls -l {} \;
+
+    - name: Upload ORT Analyzer Result
+      uses: actions/upload-artifact@v4
       with:
         name: ort-analyzer-result
-        path: ${{ inputs.project-dir }}/ort/analyzer-result.yml
+        path: ${{ github.workspace }}/ort/analyzer-result.yml

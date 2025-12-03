@@ -34,6 +34,11 @@ inputs:
       This applies to package managers that support lock files, e.g. NPM.
     required: false
     default: 'false'
+  continue-on-error:
+    description: >
+      Continue the workflow even if the ORT analyzer fails. Set to 'false' to fail on errors.
+    required: false
+    default: 'true'
 
 runs:
   using: composite
@@ -73,7 +78,7 @@ runs:
         docker rm $container_id
 
     - name: Run ORT Analyzer
-      continue-on-error: true
+      continue-on-error: ${{ inputs.continue-on-error == 'true' }}
       shell: bash
       run: |
         echo "Running ORT analyzer..."
@@ -92,3 +97,4 @@ runs:
       with:
         name: ort-analyzer-result
         path: ${{ inputs.project-dir }}/ort/analyzer-result.yml
+

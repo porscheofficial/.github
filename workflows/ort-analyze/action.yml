@@ -39,11 +39,13 @@ inputs:
       Continue the workflow even if the ORT analyzer fails. Set to 'false' to fail on errors.
     required: false
     default: 'true'
-  enabled-package-managers:
-    description: >
-      Optional. Comma-separated list of ORT analyzer package managers
-      (e.g. PNPM, NPM, Maven). If not set, all package managers are enabled.
-    required: false
+enabled-package-managers:
+  description: >
+    Optional. Comma-separated list of ORT analyzer package managers.
+    Allowed values:
+    Bazel, Bower, Bundler, Cargo, Carthage, CocoaPods, Composer, Conan, GoMod, Gradle, GradleInspector, Maven, NPM, NuGet, PIP, Pipenv, PNPM,
+    Poetry, Pub, SBT, SpdxDocumentFile, Stack, SwiftPM, Tycho, Unmanaged, Yarn, Yarn2.
+  required: false
 
 runs:
   using: composite
@@ -103,6 +105,7 @@ runs:
       with:
         name: ort-analyzer-result
         path: ${{ inputs.project-dir }}/ort/analyzer-result.yml
+
 
 
 

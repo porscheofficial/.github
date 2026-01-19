@@ -93,7 +93,7 @@ runs:
           -u $(id -u):$(id -g) \
           ${{ inputs.container-registry }}/${{ inputs.container-repository }}:${{ inputs.container-image-tag }} \
           -P ort.analyzer.allowDynamicVersions=${{ inputs.allow-dynamic-versions }} \
-          ${{ inputs.enabled-package-managers && format('-P ort.analyzer.enabledPackageManagers=%s', inputs.enabled-package-managers) || '' }} \
+          ${{ inputs.enabled-package-managers && format('-P ort.analyzer.enabledPackageManagers={0}', inputs.enabled-package-managers) || '' }} \
           analyze \
           --input-dir /project/ \
           --output-dir /project/ort/
@@ -103,5 +103,6 @@ runs:
       with:
         name: ort-analyzer-result
         path: ${{ inputs.project-dir }}/ort/analyzer-result.yml
+
 
 

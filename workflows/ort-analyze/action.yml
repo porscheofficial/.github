@@ -39,7 +39,14 @@ inputs:
       Continue the workflow even if the ORT analyzer fails. Set to 'false' to fail on errors.
     required: false
     default: 'true'
-
+  enabled-package-managers:
+    description: >
+      Optional. Comma-separated list of ORT analyzer package managers.
+      Allowed values:
+      Bazel, Bower, Bundler, Cargo, Carthage, CocoaPods, Composer, Conan, GoMod, Gradle, GradleInspector, Maven, NPM, NuGet, PIP, Pipenv, PNPM,
+      Poetry, Pub, SBT, SpdxDocumentFile, Stack, SwiftPM, Tycho, Unmanaged, Yarn, Yarn2.
+    required: false
+    
 runs:
   using: composite
   steps:
@@ -88,6 +95,7 @@ runs:
           -u $(id -u):$(id -g) \
           ${{ inputs.container-registry }}/${{ inputs.container-repository }}:${{ inputs.container-image-tag }} \
           -P ort.analyzer.allowDynamicVersions=${{ inputs.allow-dynamic-versions }} \
+          ${{ inputs.enabled-package-managers && format('-P ort.analyzer.enabledPackageManagers={0}', inputs.enabled-package-managers) || '' }} \
           analyze \
           --input-dir /project/ \
           --output-dir /project/ort/
@@ -97,4 +105,8 @@ runs:
       with:
         name: ort-analyzer-result
         path: ${{ inputs.project-dir }}/ort/analyzer-result.yml
+
+
+
+
 

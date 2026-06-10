@@ -101,7 +101,7 @@ runs:
           ${{ inputs.container-registry }}/${{ inputs.container-repository }}:${{ inputs.container-image-tag }} \
           -P ort.analyzer.allowDynamicVersions=${{ inputs.allow-dynamic-versions }} \
           ${{ inputs.enabled-package-managers && format('-P ort.analyzer.enabledPackageManagers={0}', inputs.enabled-package-managers) || '' }} \
-          analyze \
+          ${{ inputs.log-level }} analyze \
           --input-dir /project/ \
           --output-dir /project/ort/
 

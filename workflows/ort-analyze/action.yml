@@ -46,7 +46,12 @@ inputs:
       Bazel, Bower, Bundler, Cargo, Carthage, CocoaPods, Composer, Conan, GoMod, Gradle, GradleInspector, Maven, NPM, NuGet, PIP, Pipenv, PNPM,
       Poetry, Pub, SBT, SpdxDocumentFile, Stack, SwiftPM, Tycho, Unmanaged, Yarn, Yarn2.
     required: false
-    
+  log-level:
+    description: >
+      Optional. Log level for ORT analyzer. Allowed values: --debug, --info, --warn, --error.
+    required: false
+    default: --warn
+
 runs:
   using: composite
   steps:

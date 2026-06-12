@@ -12,10 +12,10 @@ inputs:
 runs:
   using: composite
   steps:
-  - uses: todogroup/repolinter-action@v1
+  - uses: todogroup/repolinter-action@4d478dcd860571382da7d512d6dc6dd5f554fbb2 # v1.7.3
     with:
       config_url: 'https://raw.githubusercontent.com/porscheofficial/.github/main/workflows/repolinter/general-ruleset.yml'
-  - uses: todogroup/repolinter-action@v1
+  - uses: todogroup/repolinter-action@4d478dcd860571382da7d512d6dc6dd5f554fbb2 # v1.7.3
     if: ${{ inputs.is-distributed }}
     with:
       config_url: 'https://raw.githubusercontent.com/porscheofficial/.github/main/workflows/repolinter/distribution-ruleset.yml'

@@ -55,13 +55,13 @@ inputs:
 runs:
   using: composite
   steps:
-    - uses: aws-actions/configure-aws-credentials@v4
+    - uses: aws-actions/configure-aws-credentials@e7f100cf4c008499ea8adda475de1042d6975c7b # v6.2.0
       with:
         aws-access-key-id: ${{ inputs.ort-aws-access-key-id }}
         aws-secret-access-key: ${{ inputs.ort-aws-secret-access-key }}
         aws-region: eu-central-1
 
-    - uses: aws-actions/amazon-ecr-login@v2
+    - uses: aws-actions/amazon-ecr-login@fa648b43de3d4d023bcb3f89ed6940096949c419 # v2.1.5
       with:
         mask-password: true
 
@@ -106,7 +106,7 @@ runs:
           --output-dir /project/ort/
 
     - name: Upload ORT Analyzer Result
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
       with:
         name: ort-analyzer-result
         path: ${{ inputs.project-dir }}/ort/analyzer-result.yml
